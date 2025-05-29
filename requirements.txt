@@ -1,0 +1,6 @@
+colorama
+torch>=2.0.0
+transformers>=4.36.0
+accelerate>=0.21.0
+langchain>=0.1.14
+langchain-community>=0.0.27
