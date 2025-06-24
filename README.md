@@ -24,7 +24,7 @@ By leveraging **prompt engineering**, we have shaped the LLM into a wine expert 
 ## Visual Demo
 The following demo showcases the **LLM-based wine expert chatbot** in action during multi-turn conversations:
 
-![LLM-Based Wine Chatbot Demo](CSN_Figure1.svg)  
+![LLM-Based Wine Chatbot Demo](WineChatbot-Visual-Demo.gif)  
 <div align="center">
   <b>Fig. 1. Example multi-turn dialogue between a user and the wine expert chatbot, illustrating real-time responses.</b>
 </div>  
