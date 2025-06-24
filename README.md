@@ -28,7 +28,9 @@ The following demo showcases the **LLM-based wine expert chatbot** in action dur
 <div align="center">
   <b>Fig. 1. Example multi-turn dialogue between a user and the wine expert chatbot, illustrating real-time responses.</b>
 </div>  
-
+  <br>
+  
+**Note:** This demo uses a token setting that limits response length.
   <br>
 
 ## Future Work
@@ -43,3 +45,6 @@ The following demo showcases the **LLM-based wine expert chatbot** in action dur
 git clone https://github.com/YOUR_USERNAME/LLM-Based-Wine-Chatbot.git
 cd LLM-Based-Wine-Chatbot
 pip install -r requirements.txt
+
+# Run
+streamlit run chat-LLM/app.py
