@@ -8,7 +8,7 @@ import torch
 
 # 모델 초기화 변수
 chat_chain = None
-HF_TOKEN = "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"
+HF_TOKEN = "YOUT YOKEN"
 
 def init_chatbot(model_id="mistralai/Mistral-7B-Instruct-v0.1", hf_token=HF_TOKEN):
     global chat_chain
@@ -55,7 +55,7 @@ def init_chatbot(model_id="mistralai/Mistral-7B-Instruct-v0.1", hf_token=HF_TOKE
         template=custom_template
     )
 
-    # ✅ 대화 요약! 메모리 + 체인 구성
+    # 대화 요약! 메모리 + 체인 구성
     memory = ConversationSummaryMemory(
     llm=llm,                   # 요약에 사용할 모델
     return_messages=False,     # True면 chat format으로 저장됨
