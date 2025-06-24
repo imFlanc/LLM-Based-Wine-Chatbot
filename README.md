@@ -26,7 +26,7 @@ The following demo showcases the **LLM-based wine expert chatbot** in action dur
 
 ![LLM-Based Wine Chatbot Demo](WineChatbot-Visual-Demo.gif)  
 <div align="center">
-  <b>Fig. 1. Example multi-turn dialogue between a user and the wine expert chatbot, illustrating real-time responses.</b>
+  <b>Fig. 1. Example multi-turn dialogue between a user and the chatbot, illustrating real-time responses.</b>
 </div>  
   <br>
   
@@ -42,9 +42,9 @@ The following demo showcases the **LLM-based wine expert chatbot** in action dur
 
 ## Installation
 ```bash
-git clone https://github.com/YOUR_USERNAME/LLM-Based-Wine-Chatbot.git
+git clone https://github.com/imFlanc/LLM-Based-Wine-Chatbot.git
 cd LLM-Based-Wine-Chatbot
 pip install -r requirements.txt
 
 # Run
-streamlit run chat-LLM/app.py
+streamlit run LLM-Based-Wine-Chatbot/app.py
