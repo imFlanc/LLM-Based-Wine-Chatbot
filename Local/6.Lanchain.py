@@ -16,6 +16,8 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 
+from chatbot import HF_TOKEN, model_id
+
 # ✅ 초기화
 init(autoreset=True)
 warnings.filterwarnings("ignore")
@@ -33,15 +35,14 @@ def suppress_stdout():
 
 # ✅ 모델 ID
 model_id = "mistralai/Mistral-7B-Instruct-v0.1"
-HF_TOKEN = "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"  # Hugging Face 토큰 입력
 
 # ✅ 토크나이저 & 모델 로딩
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=HF_TOKEN)
+tokenizer = AutoTokenizer.from_pretrained(model_id, token=HF_TOKEN)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     device_map="auto",
     torch_dtype=torch.float16,
-    use_auth_token=HF_TOKEN
+    token=HF_TOKEN
 )
 
 print("🧠 모델 로드된 디바이스:", model.device)

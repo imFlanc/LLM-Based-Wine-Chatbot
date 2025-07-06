@@ -2,10 +2,10 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import time
+from chatbot import HF_TOKEN, model_id
 
 # ✅ 모델 ID
 model_id = "mistralai/Mistral-7B-Instruct-v0.1"
-HF_TOKEN = "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"
 
 # ✅ 프롬프트 템플릿 (Wine Expert Persona)
 def build_prompt(user_input: str) -> str:
@@ -23,12 +23,12 @@ Question: {user_input}
 """
 
 # ✅ 토크나이저 & 모델 불러오기
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=HF_TOKEN)
+tokenizer = AutoTokenizer.from_pretrained(model_id, token=HF_TOKEN)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     device_map="auto",         # GPU 자동 설정
     torch_dtype=torch.float16, # 4070Ti에 최적
-    use_auth_token=HF_TOKEN    # 로그인 인증 토큰 사용
+    token=HF_TOKEN    # 로그인 인증 토큰 사용
 )
 
 # ✅ 현재 디바이스 출력

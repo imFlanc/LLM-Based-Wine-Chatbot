@@ -10,6 +10,7 @@ import warnings
 import contextlib
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers.utils import logging
+from chatbot import HF_TOKEN, model_id
 
 # ✅ 초기화: 컬러, 경고, 로깅
 init(autoreset=True)
@@ -29,7 +30,6 @@ def suppress_stdout():
 
 # ✅ 모델 ID
 model_id = "mistralai/Mistral-7B-Instruct-v0.1"
-HF_TOKEN = "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"  # Hugging Face에서 발급한 토큰 넣기
 
 # ✅ 프롬프트 템플릿 (Wine Expert Persona)
 def build_prompt(context: list, user_input: str) -> str:
@@ -48,12 +48,12 @@ def build_prompt(context: list, user_input: str) -> str:
     return prompt
 
 # ✅ 토크나이저 & 모델 불러오기
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=HF_TOKEN)
+tokenizer = AutoTokenizer.from_pretrained(model_id, token=HF_TOKEN)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     device_map="auto",
     torch_dtype=torch.float16,
-    use_auth_token=HF_TOKEN
+    token=HF_TOKEN
 )
 
 # ✅ 현재 디바이스 출력
