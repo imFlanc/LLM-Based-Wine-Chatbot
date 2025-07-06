@@ -66,7 +66,8 @@ open-webui serve
 ```
 
 # Setting
-1. Go to [localhost:8080](localhost:8080) and create an admin account.
-2. Navigate to **Profile > Settings > Connections**.
-3. Add a new connection with the URL: `http://127.0.0.1:8000/v1`.
-4. Save and select the new model from the main chat screen.
+1.  Create a `.env` file in the project root and add your token: `TOKEN=your_token_here`
+2. Go to [localhost:8080](localhost:8080) and create an admin account.
+3. Navigate to **Profile > Settings > Connections**.
+4. Add a new connection with the URL: `http://127.0.0.1:8000/v1`.
+5. Save and select the new model from the main chat screen.
