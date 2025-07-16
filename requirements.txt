@@ -1,9 +1,9 @@
 # On a workstation equipped with two Intel 5220R CPUs (24 cores, 48 threads each) and one NVIDIA RTX A6000 GPU (48 GB)
 # CUDA 11.7 + PyTorch 2.1.2 호환
 # ───── Core ─────
-torch==2.1.2
-torchvision==0.16.2
-torchaudio==2.1.2
+torch==2.2.2
+torchvision==0.17.2
+torchaudio==2.2.2
 transformers==4.40.1
 accelerate==1.7.0
 
@@ -24,13 +24,13 @@ typing-inspect==0.9.0
 dataclasses-json==0.6.7
 requests-toolbelt==1.0.0
 
-# ───── Streamlit (프론트엔드) ─────
+# ───── Streamlit (기존 프론트엔드) ─────
 streamlit==1.35.0
 
 # ───── 기타 종속성 ─────
 numpy==1.26.4
 protobuf==4.25.3
 
-# Backend
+# ───── Backend (FastAPI for Open Web UI) ─────
 fastapi
 uvicorn

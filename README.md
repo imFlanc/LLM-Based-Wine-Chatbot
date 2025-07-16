@@ -24,7 +24,7 @@ By leveraging **prompt engineering**, we have shaped the LLM into a wine expert 
 ## Visual Demo
 The following demo showcases the **LLM-based wine expert chatbot** in action during multi-turn conversations:
 
-![LLM-Based Wine Chatbot Demo](WineChatbot-Visual-Demo.gif)  
+![LLM-Based Wine Chatbot Demo](Demo-v1.gif)  
 <div align="center">
   <b>Fig. 1. Example multi-turn dialogue between a user and the chatbot, illustrating real-time responses.</b>
 </div>  
@@ -41,10 +41,33 @@ The following demo showcases the **LLM-based wine expert chatbot** in action dur
 - Migrate frontend to React for richer interactivity
 
 ## Installation
+- chatbot server
 ```bash
 git clone https://github.com/imFlanc/LLM-Based-Wine-Chatbot.git
 cd LLM-Based-Wine-Chatbot
+
+python -m venv .venv
+.\.venv\Scripts\activate (windows)
+source .venv/bin/activate (mac/linux)
+
 pip install -r requirements.txt
 
+pip install open-webui
+```
+
 # Run
-streamlit run LLM-Based-Wine-Chatbot/app.py
+- server
+```bash
+python -m uvicorn server:app --reload
+```
+- open-WebUI - [URL](localhost:8080)
+```bash
+open-webui serve
+```
+
+# Setting
+1.  Create a `.env` file in the project root and add your token: `TOKEN=your_token_here`
+2. Go to [localhost:8080](localhost:8080) and create an admin account.
+3. Navigate to **Profile > Settings > Connections**.
+4. Add a new connection with the URL: `http://127.0.0.1:8000/v1`.
+5. Save and select the new model from the main chat screen.
