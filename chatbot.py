@@ -1,4 +1,3 @@
-# Steamlit에서 불러다 쓸 수 있게 변경.
 import asyncio
 import os
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
@@ -23,7 +22,7 @@ HF_TOKEN = os.environ.get("TOKEN")
 
 # # 모델 초기화 변수
 # chat_chain = None
-
+old_memory = None
 def init_chatbot(model_id=model_id, hf_token=HF_TOKEN):
     # chat_chain = None
 
@@ -73,9 +72,10 @@ def init_chatbot(model_id=model_id, hf_token=HF_TOKEN):
     memory = ConversationSummaryMemory(
     llm=llm,                   # 요약에 사용할 모델
     return_messages=False,     # True면 chat format으로 저장됨
-    memory_key="history"       # prompt에서 사용된 변수명과 동일해야 함
+    memory_key="history",       # prompt에서 사용된 변수명과 동일해야 함
     )
-
+    
+    memory.buffer = old_memory
     # chat_chain = ConversationChain(llm=llm, memory=memory, prompt=prompt, verbose=False)
     return ConversationChain(llm=llm, memory=memory, prompt=prompt, verbose=False)
 
@@ -98,35 +98,76 @@ def get_response(chatbot, user_input):
 
 
 async def chain_stream_generator(chain: ConversationChain, user_input: str, model_name: str) -> AsyncGenerator[str, None]:
-    """
-    ConversationChain의 .stream()을 호출하고,
-    결과 조각들을 OpenAI 스트리밍 형식으로 변환하여 yield합니다.
-    """
-    # 첫 번째 청크는 역할(role)을 알려줍니다.
+    global old_memory
+
+    # 역할 설정 스트림 헤더
     first_chunk_data = ChatCompletionStreamResponse(
         model=model_name,
         choices=[ChatCompletionStreamResponseChoice(delta=DeltaMessage(role="assistant"))]
     )
     yield f"data: {first_chunk_data.model_dump_json()}\n\n"
-    
-    # chain.stream()을 호출하여 실시간으로 응답 조각을 받습니다.
-    # .stream()의 결과는 보통 'response' 키를 가진 딕셔너리 형태의 조각을 반환합니다.
+
+    # # 추론 중입니다
+    # thinking_message = ChatCompletionStreamResponse(
+    # model=model_name,
+    # choices=[ChatCompletionStreamResponseChoice(
+    #     delta=DeltaMessage(content="(Thinking...)\n\n"))]
+    # )
+    # yield f"data: {thinking_message.model_dump_json()}\n\n"
+
+    buffer = ""
+    triggered = False
+    final_response = ""
+
     for chunk in chain.stream({"input": user_input}):
-        # chunk의 형태를 확인하고 실제 텍스트를 추출합니다.
-        # ConversationChain의 경우 chunk['response']에 텍스트가 들어있습니다.
         response_piece = chunk.get("response")
-        
-        if response_piece:
-            # 추출한 텍스트 조각을 스트리밍 형식으로 만듭니다.
+        if not response_piece:
+            continue
+
+        # 아직 "Wine Expert:" 못 찾았으면 버퍼에 누적
+        if not triggered:
+            buffer += response_piece
+            if "Wine Expert:" in buffer:
+                triggered = True
+                after = buffer.split("Wine Expert:")[-1]
+                for char in after:
+                    final_response += char
+                    chunk_data = ChatCompletionStreamResponse(
+                        model=model_name,
+                        choices=[ChatCompletionStreamResponseChoice(
+                            delta=DeltaMessage(content=char)
+                        )]
+                    )
+                    yield f"data: {chunk_data.model_dump_json()}\n\n"
+                    await asyncio.sleep(0.02)
+            continue  # 아직 trigger 안 됐거나 방금 됐으면 다음 chunk부터
+        else:
+            # trigger 됐으면 이후 response도 1자씩 출력
+            for char in response_piece:
+                final_response += char
+                chunk_data = ChatCompletionStreamResponse(
+                    model=model_name,
+                    choices=[ChatCompletionStreamResponseChoice(
+                        delta=DeltaMessage(content=char)
+                    )]
+                )
+                yield f"data: {chunk_data.model_dump_json()}\n\n"
+                await asyncio.sleep(0.02)
+                
+    # 끝나기 전 문장부호 확인
+    final_response = final_response.strip()
+    if final_response and not final_response.endswith((".", "!", "?")):
+        for dot in "...":
             chunk_data = ChatCompletionStreamResponse(
                 model=model_name,
                 choices=[ChatCompletionStreamResponseChoice(
-                    delta=DeltaMessage(content=response_piece) # <--- 실제 LLM이 생성한 조각
+                    delta=DeltaMessage(content=dot)
                 )]
             )
             yield f"data: {chunk_data.model_dump_json()}\n\n"
-
-    # 마지막에는 스트림이 끝났음을 알리는 [DONE] 메시지를 보냅니다.
+            await asyncio.sleep(0.02)
+            
+    old_memory = chain.memory.buffer
     yield "data: [DONE]\n\n"
     
 async def fake_stream_generator(model_name: str, user_input: str) -> AsyncGenerator[str, None]:
